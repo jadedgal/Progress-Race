@@ -1,0 +1,9 @@
+.progress{
+    height:15px
+}
+#loanContainer{
+    position: absolute;
+    right: 0;
+    top: 50vh;
+    bottom: 50vh;
+}
