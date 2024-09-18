@@ -4,6 +4,9 @@ The aim is to get as high a credit score as possible.
 # Updated contents:
 
  - Bank toasts (popups) to alert you that you owe them, big time
+ - Number formatting with commas  for readability.
+  - Bet customiser with "all in" button. 
+
   
  - New credit system 
 	 - 
@@ -12,5 +15,4 @@ The aim is to get as high a credit score as possible.
   - New Lose Page
 	  - 
 	  - Basically just the gda gde gda gda o nugget to really embarrass you.
-  - Number formatting with commas  for readability.
-  - Bet customiser with "all in" button. 
+ 
