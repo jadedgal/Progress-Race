@@ -15,7 +15,6 @@ The aim is to get as high a credit score as possible.
   - New Lose Page
 	  - 
 	  - Basically just the gda gde gda gda o nugget to really embarrass you.
-
 - New "How To Play" page
  	- introduces the aim of the game
   
