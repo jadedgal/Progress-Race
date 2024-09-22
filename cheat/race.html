@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<head>
+    <title> Race it </title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+    <link href="style.css" rel="stylesheet">
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="toast-container" id="toast-container"></div>
+    <div id="racetrack">
+        <div class="progress">
+            <div class="progress-bar bg-success" id="progress-1"
+                style="width:0%"></div>
+        </div>
+        <br>
+        <p style="text-align:center;">The <b> Green </b> goblin</p>
+        <br>
+        <div class="progress">
+            <div class="progress-bar bg-warning" id="progress-2"
+                style="width:0%"></div>
+        </div>
+        <br>
+        <p style="text-align:center;">Mellow <b>Yellow</b></p>
+        <br>
+        <div class="progress">
+            <div class="progress-bar bg-danger" id="progress-3"
+                style="width:0%"></div>
+        </div>
+        <br>
+        <p style="text-align:center;"><b>Red</b>dy to win</p>
+    </div>
+    <div style="max-width: fit-content;margin-left: auto;margin-right: auto;">
+        <button onclick="play()" id="button"> Click </button>
+    </div>
+    <div class="moneyContainer">
+        <div style="text-align:center;">
+            <p> You have <a id="moneyOut">10</a> money</p>
+            <h4>Choose your bet</h4>
+            <input type="radio" id="Bet1" name="bet_choice" value="1" checked>
+            <label for="Bet1">The Green Goblin</label><br>
+            <input type="radio" id="Bet2" name="bet_choice" value="2">
+            <label for="Bet2">Mellow Yellow</label><br>
+            <input type="radio" id="Bet3" name="bet_choice" value="3">
+            <label for="Bet3">Reddy to win</label>
+        </div>
+        <br>
+    </div>
+
+    <div id="loanContainer">
+        <button onclick="getLoan()">Get loan</button>
+        <p>Current Credit Score: <a id="creditOut"></a>.</p>
+        <p>You have <a id="bankLoanOut"></a> bank loans</p>
+        <p>£300 to repay a loan</p>
+        <button onclick="loanPay().then()">Pay Loans</button>
+        <button onclick="maxLoans().then()">Max Loans</button>
+
+    </div>
+
+    <div style="text-align: center;">
+        <p>Current Bet: <a id="betOut"></a></p>
+        <h4>Change your bet</h4>
+        <button onclick="allIn()">All In</button>
+        <input type="number" name="betIn" id="betIn">
+        <button onclick="changeBet(document.getElementById('betIn').value)"
+            id="changeButton">Change</button>
+    </div>
+    <div id="toast-container"
+        style="position: absolute;bottom: 0;right: 0;width: fit-content;height: fit-content;">
+    </div>
+    <script>
+    let nf = new Intl.NumberFormat('en-US')
+    let playerMoney = 0;
+    let creditScore = 10000;
+if (localStorage.getItem("money") === null || localStorage.getItem("money") < 20){
+	playerMoney = 100;
+	localStorage.setItem("money","100");
+}else{
+	playerMoney = Number(localStorage.getItem("money"));
+}
+
+const setRandomInterval = (intervalFunction, minDelay, maxDelay) => {
+  let timeout;
+
+  const runInterval = () => {
+    const timeoutFunction = () => {
+      intervalFunction();
+      runInterval();
+    };
+
+    const delay = Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
+
+    timeout = setTimeout(timeoutFunction, delay);
+  };
+
+  runInterval();
+
+  return {
+    clear() { clearTimeout(timeout) },
+  };
+};
+
+    let currentBet = 20;
+    let elem1Won = false;  
+    let elem2Won = false;
+    let elem3Won = false;
+    let bankLoans = 0;
+    function play() {
+
+        toast()
+        
+        localStorage.setItem("money",playerMoney)
+        if (playerMoney<currentBet) {
+            currentBet = playerMoney
+            document.getElementById("betOut").innerText = nf.format(currentBet)
+        }
+        
+        disableRadios()
+        document.getElementById("changeButton").disabled=true;
+        document.getElementById("button").disabled = true;
+        let elem1 = document.getElementById("progress-1");
+        let elem1Number = 0
+        let elem2 = document.getElementById("progress-2")
+        let elem2Number = 0
+        let elem3 = document.getElementById("progress-3")
+        let elem3Number = 0
+        let looping = true;
+        
+        let elem1Interval = setRandomInterval(()=>{if(looping){incrementElem1()}},0,100)
+        let elem2Interval = setRandomInterval(()=>{if(looping){incrementElem2()}},0,100)
+        let elem3Interval = setRandomInterval(()=>{if(looping){incrementElem3()}},0,100)
+        function incrementElem1() {
+            
+            elem1Number+= randNum();
+            if (elem1Number >=100){
+                elem1.style=("width:"+elem1Number+"%;")
+                looping = false
+                elem1Won = true
+                
+                handleEnd("1")
+            }
+            elem1.style=("width:"+elem1Number+"%;")
+        }
+
+        function incrementElem2() {
+            elem2Number+= randNum();
+            
+            if (elem2Number >=100){
+                elem2.style=("width:"+elem2Number+"%;")
+                looping = false
+                elem2Won = true
+                
+                handleEnd("2");
+            }
+            elem2.style=("width:"+elem2Number+"%;")
+        }
+        function incrementElem3() {
+            
+            elem3Number+= randNum();
+            if (elem3Number >=100){
+                elem3.style=("width:"+elem3Number+"%;")
+                looping = false
+                elem3Won = true
+                
+                handleEnd("3")
+            }
+            elem3.style=("width:"+elem3Number+"%;")
+        }
+
+        function randNum(){
+            min = -1
+            max = 3
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+        }
+
+    function handleEnd(winner){
+
+        let userchoice = returnRadio()
+        if (true) {
+            playerMoney+=currentBet
+        } 
+        
+    localStorage.setItem("money",playerMoney)
+    document.getElementById("moneyOut").innerText = nf.format(playerMoney)
+    document.getElementById("button").disabled = false
+    document.getElementById("changeButton").disabled=false
+        enableRadios()
+        
+        if (playerMoney<currentBet) {
+            currentBet=playerMoney
+        }
+    }
+
+    function returnRadio() {
+            var ele = document.getElementsByName('bet_choice');
+ 
+            for (i = 0; i < ele.length; i++) {
+                if (ele[i].checked)
+                return ele[i].value;
+        }
+    }
+
+    function disableRadios() {
+        let radios = document.getElementsByName('bet_choice');
+        for (var i=0, iLen=radios.length; i<iLen; i++) {
+            radios[i].disabled = true;
+        } 
+    }
+
+    function enableRadios() {
+        let radios = document.getElementsByName('bet_choice');
+        for (var i=0, iLen=radios.length; i<iLen; i++) {
+            radios[i].disabled = false;
+        } 
+    }
+
+    function changeBet(change) {
+        
+        if (Number(change)>playerMoney || Number(change) <=0){
+            
+        }else{
+            currentBet=Number(change)
+            document.getElementById("betOut").innerText = nf.format(currentBet)
+            document.getElementById("betIn").value = ""
+        }
+
+    }
+
+    document.getElementById("moneyOut").innerText = nf.format(playerMoney)
+    document.getElementById("betOut").innerText = nf.format(currentBet)
+    document.getElementById("bankLoanOut").innerText = bankLoans
+    document.getElementById("creditOut").innerText = nf.format(creditScore)
+    
+    async function loanPay() {
+        let totalLoansToPay = bankLoans;
+    let i = 0;
+
+    return new Promise((resolve) => {
+        function nextPay() {
+            if (i < totalLoansToPay && playerMoney >= 300) {
+                {
+                    if (playerMoney >=300 && bankLoans >0){
+                        bankLoans -=1;
+                        playerMoney -=300
+                        creditScore+=700
+                        updateDisplay()
+                    }
+                }
+                i++;
+                setTimeout(nextPay, 0); 
+            } else {
+                
+                resolve(); 
+            }
+        }
+
+        nextPay();
+    });
+}    
+function takeLoan() {
+    if (creditScore >= 600) {
+        creditScore -= 600;
+        playerMoney += 250;
+        bankLoans += 1;
+        updateDisplay();
+    }
+
+}
+
+
+
+
+    let bankMessages = [
+        "WHERE IS OUR MONEY!",
+        "WE HAVE TAKEN YOUR WIFE AND KIDS. Get a 2 for 1 deal and get them back, only for the price of all our money back",
+        "Please, dude. I need my money back before the boss sees",
+        "We took your house.",
+        "Money. We are a bank. We need money. Give it us back. UwU",
+        "We have taken your cat. We will give it back for you paying back your loans.",
+        "We now own your car. Want it back? PAY BACK YOUR LOANS",
+        "We have taken your wife. She is now married to the bank manager. If you want to get her back, it's 1000 quid.",
+        "We have taken your dog. He is now working in the bank. It's 200 quid to get him back.",
+        "We have taken your food. You are now only allowed to eat bank food. It's PAYBACK YOUR LOANS FOR A MEAL.",
+        "We have taken your bed. You are now only allowed to sleep in the bank. PAY BACK YOUR LOANS.",
+        "Hi, I know an amazing new thing you can do. It's called PAYING BACK YOUR LOANS",
+        ""
+]
+    function toast() {
+        
+        if (bankLoans>5 && toastbool) {
+            createToast()
+        }
+    }
+
+    function createToast(){
+        
+        let toast = document.createElement("div")
+      toast.className = "toast show"
+      toast.innerHTML = `
+      <div class="toast-header">
+              <img src="bank.jpg" class="rounded me-2" style="width: 10%;">
+                <strong>Bank Message</strong>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" style="right: 0;"></button>
+            </div>
+            <div class="toast-body">
+              ${bankMessages[Math.floor(Math.random()*bankMessages.length)]}
+            </div>
+            `
+    document.getElementById("toast-container").appendChild(toast)
+
+
+    }
+
+    async function maxLoans() {
+    let maxLoansToTake = Math.floor(creditScore / 600);  
+    let i = 0;
+
+    return new Promise((resolve) => {
+        function nextLoan() {
+            if (i < maxLoansToTake) {
+                takeLoan(); 
+                i++;
+                setTimeout(nextLoan, 0); 
+            } else {
+                resolve(); 
+            }
+        }
+
+        nextLoan();
+    });
+}
+
+    function allIn() {
+        
+        currentBet = playerMoney;
+        document.getElementById("betOut").innerText = nf.format(currentBet)
+
+    }
+
+    function comma(x) {
+     return x.toLocaleString()
+}
+
+async function loansYeet() {
+    await Promise.all([maxLoans(), loanPay()]);
+}
+
+function allIns(){
+    setInterval(allIn,0)
+}
+
+function updateDisplay() {
+    document.getElementById("moneyOut").innerText = nf.format(playerMoney);
+    document.getElementById("bankLoanOut").innerText = nf.format(bankLoans);
+    document.getElementById("creditOut").innerText = nf.format(creditScore);
+}
+let toastbool = false
+    </script>
+</body>

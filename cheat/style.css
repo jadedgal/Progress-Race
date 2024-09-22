@@ -1,0 +1,16 @@
+.progress{
+    height:15px
+}
+#loanContainer{
+    position: absolute;
+    right: 0;
+    top: 50vh;
+    bottom: 50vh;
+}
+
+.toast-container{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 1%;
+}
