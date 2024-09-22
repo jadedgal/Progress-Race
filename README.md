@@ -13,8 +13,6 @@ The aim is to get as high a credit score as possible.
 	  - 600 to take a loan of 250 money
 	  - 300 money to pay back a loan and get 700 credit
   - New Lose Page
-	  - 
 	  - Basically just the gda gde gda gda o nugget to really embarrass you.
-- New "How To Play" page
- 	- introduces the aim of the game
-  
+  - New "How to play" Page
+	  - Basically just teaches you how to play the game
